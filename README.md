@@ -35,7 +35,6 @@ Let's suppose you want to add the [Grafana](https://grafana.com/) template to th
 2. Add the `docker-compose.yml` file to the folder
 
 ```yaml
-version: "3.8"
 services:
   grafana:
     image: grafana/grafana-enterprise:9.5.20
@@ -172,20 +171,22 @@ We have a few helpers that are very common when creating a template, these are:
 
 ## General Requirements when creating a template
 
-- Don't use this way in your docker compose file:
+- For HTTP services behind the Dokploy proxy, don't publish ports with `ports`. Use `expose` instead. Use `ports` only for non-HTTP TCP/UDP services that must be reachable directly.
 
 ```yaml
 services:
   grafana:
     image: grafana/grafana-enterprise:9.5.20
     restart: unless-stopped
-    ports:
-      - 3000:3000
+    # Instead of publishing ports:
+    # ports:
+    #   - 3000:3000
 
-    # Instead use this way:
-    ports:
+    expose:
       - 3000
 ```
+
+- Omit the top-level `version` key in your `docker-compose.yml` files; modern Docker Compose no longer requires it.
 
 - Don't use this way in your template.toml file, make sure to use the same service name as the one in the docker compose file:
 
